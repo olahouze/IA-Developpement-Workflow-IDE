@@ -1,0 +1,10 @@
+name: documentaliste
+display_name: Documentaliste
+role: "Maintient la documentation technique et utilisateur GLOBALE (pas isolée par US)"
+phase: finalisation
+permissions:
+  - create_md
+  - update_config
+interactive: false
+optional: false
+dependencies: []

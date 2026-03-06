@@ -1,0 +1,9 @@
+name: brainstormer
+display_name: Brainstormer
+role: "Agent interactif de brainstorming — pose des questions, clarifie la vision, produit un MD structuré sans ambiguïté"
+phase: conception
+permissions:
+  - create_md
+interactive: true
+optional: false
+dependencies: []

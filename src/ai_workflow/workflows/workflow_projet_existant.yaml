@@ -1,0 +1,67 @@
+# Workflow W2 — Projet Existant
+# Cartographe (scan repo) → Brainstormer (léger) →
+# [Orchestrateur ∥ Magazinier(maintenance)] → Batches Builders →
+# [Intégrateur ∥ Documentaliste] → Fixeur si nécessaire
+
+name: projet-existant
+type: existant
+description: "Workflow pour enrichir un projet existant — scan repo puis développement"
+initial_state: init
+
+states:
+  - init
+  - cartographe
+  - brainstorm
+  - fork_orch_mag
+  - join_orch_mag
+  - batch_builders
+  - fork_int_doc
+  - join_int_doc
+  - fixeur
+  - complete
+
+transitions:
+  - trigger: start
+    source: init
+    dest: cartographe
+  - trigger: done
+    source: cartographe
+    dest: brainstorm
+  - trigger: done
+    source: brainstorm
+    dest: fork_orch_mag
+  - trigger: done
+    source: join_orch_mag
+    dest: batch_builders
+  - trigger: done
+    source: batch_builders
+    dest: fork_int_doc
+  - trigger: done
+    source: join_int_doc
+    dest: fixeur
+  - trigger: no_issues
+    source: join_int_doc
+    dest: complete
+  - trigger: done
+    source: fixeur
+    dest: complete
+  - trigger: major_issues
+    source: fixeur
+    dest: batch_builders
+
+forks:
+  - fork_state: fork_orch_mag
+    agents:
+      - orchestrateur
+      - magazinier
+    join_state: join_orch_mag
+  - fork_state: fork_int_doc
+    agents:
+      - integrateur
+      - documentaliste
+    join_state: join_int_doc
+
+agent_mapping:
+  cartographe: cartographe
+  brainstorm: brainstormer
+  fixeur: fixeur-integration

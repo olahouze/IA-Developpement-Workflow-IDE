@@ -1,0 +1,11 @@
+name: analyseur-bp
+display_name: Analyseur Bonnes Pratiques
+role: "Analyse des bonnes pratiques. Seul FAIL non-bloquant (continue si les 2 autres passent)"
+phase: analyse
+permissions:
+  - read_md
+interactive: false
+optional: false
+dependencies:
+  - developpeur
+  - testeur

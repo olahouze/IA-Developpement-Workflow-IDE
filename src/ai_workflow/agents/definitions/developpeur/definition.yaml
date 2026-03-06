@@ -1,0 +1,11 @@
+name: developpeur
+display_name: Développeur
+role: "Implémente le code de l'US. Relit TOUT le contexte à chaque itération. Fait foi pour la mémoire intra-US"
+phase: construction
+permissions:
+  - modify_code
+  - create_md
+interactive: false
+optional: false
+dependencies:
+  - orchestrateur

@@ -1,0 +1,11 @@
+name: analyseur-perf
+display_name: Analyseur Performance
+role: "Analyse de performance. Scope: tout le code, focus: modifications Dev. Verdict PASS/FAIL bloquant"
+phase: analyse
+permissions:
+  - read_md
+interactive: false
+optional: false
+dependencies:
+  - developpeur
+  - testeur

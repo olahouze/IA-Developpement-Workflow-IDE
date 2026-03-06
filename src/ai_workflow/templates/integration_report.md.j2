@@ -1,0 +1,24 @@
+# Rapport d'Intégration Global
+
+**Date :** {{ date }}
+**Itération :** {{ iteration }}
+
+## Résumé
+
+- Problèmes MINEURS : {{ minor_count }}
+- Problèmes MAJEURS : {{ major_count }}
+- Action recommandée : {{ recommended_action }}
+
+## Problèmes MINEURS
+{% for issue in minor_issues %}
+### {{ loop.index }}. {{ issue.description }}
+- US concernées : {{ issue.affected_stories | join(", ") }}
+- Correction suggérée : {{ issue.suggested_fix }}
+{% endfor %}
+
+## Problèmes MAJEURS
+{% for issue in major_issues %}
+### {{ loop.index }}. {{ issue.description }}
+- US concernées : {{ issue.affected_stories | join(", ") }}
+- Correction suggérée : {{ issue.suggested_fix }}
+{% endfor %}

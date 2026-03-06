@@ -1,0 +1,9 @@
+name: cartographe
+display_name: Cartographe
+role: "Scanne et analyse le repo existant, construit le profil projet. Incrémental + rescan total > 10 itérations"
+phase: conception
+permissions:
+  - create_md
+interactive: false
+optional: false
+dependencies: []

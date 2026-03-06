@@ -1,0 +1,11 @@
+name: analyseur-secu
+display_name: Analyseur Sécurité
+role: "Analyse de sécurité. Scope: tout le code, focus: modifications Dev. Verdict PASS/FAIL bloquant"
+phase: analyse
+permissions:
+  - read_md
+interactive: false
+optional: false
+dependencies:
+  - developpeur
+  - testeur

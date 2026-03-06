@@ -1,0 +1,12 @@
+name: orchestrateur
+display_name: Orchestrateur
+role: "Planificateur avancé — décompose en US, analyse dépendances, détecte conflits fichiers, crée batches parallèles"
+phase: orchestration
+permissions:
+  - create_md
+interactive: false
+optional: false
+dependencies:
+  - brainstormer
+  - arch-technique
+  - cartographe

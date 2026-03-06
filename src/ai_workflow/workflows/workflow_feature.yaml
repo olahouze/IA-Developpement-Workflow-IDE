@@ -1,0 +1,45 @@
+# Workflow W3 — Feature
+# Cartographe → [Orchestrateur ∥ Magazinier(maintenance)] → Batches Builders →
+# Documentaliste seul
+
+name: feature
+type: feature
+description: "Workflow léger pour ajouter une feature à un projet existant"
+initial_state: init
+
+states:
+  - init
+  - cartographe
+  - fork_orch_mag
+  - join_orch_mag
+  - batch_builders
+  - documentaliste
+  - complete
+
+transitions:
+  - trigger: start
+    source: init
+    dest: cartographe
+  - trigger: done
+    source: cartographe
+    dest: fork_orch_mag
+  - trigger: done
+    source: join_orch_mag
+    dest: batch_builders
+  - trigger: done
+    source: batch_builders
+    dest: documentaliste
+  - trigger: done
+    source: documentaliste
+    dest: complete
+
+forks:
+  - fork_state: fork_orch_mag
+    agents:
+      - orchestrateur
+      - magazinier
+    join_state: join_orch_mag
+
+agent_mapping:
+  cartographe: cartographe
+  documentaliste: documentaliste

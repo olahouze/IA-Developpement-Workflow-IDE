@@ -1,0 +1,10 @@
+name: arch-technique
+display_name: Architecte Technique
+role: "Architecture technique — stack, patterns, structure projet, décisions techniques détaillées"
+phase: conception
+permissions:
+  - create_md
+interactive: false
+optional: false
+dependencies:
+  - arch-metier

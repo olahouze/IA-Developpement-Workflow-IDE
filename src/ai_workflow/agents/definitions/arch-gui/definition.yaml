@@ -1,0 +1,10 @@
+name: arch-gui
+display_name: Architecte GUI
+role: "Architecture GUI — structure interfaces, composants UI, navigation (optionnel)"
+phase: conception
+permissions:
+  - create_md
+interactive: false
+optional: true
+dependencies:
+  - arch-metier

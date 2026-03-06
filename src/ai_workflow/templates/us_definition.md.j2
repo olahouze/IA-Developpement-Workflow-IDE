@@ -1,0 +1,22 @@
+# User Story : {{ us.name }}
+
+**ID :** {{ us.id }}
+**Batch :** {{ us.batch }}
+**Status :** {{ us.status }}
+
+## Description
+
+{{ us.description }}
+
+## Fichiers Impactés
+{% for f in us.files_impacted %}
+- {{ f }}
+{% endfor %}
+
+## Dépendances
+{% for dep in us.dependencies %}
+- {{ dep }}
+{% endfor %}
+{% if not us.dependencies %}
+- (aucune dépendance)
+{% endif %}

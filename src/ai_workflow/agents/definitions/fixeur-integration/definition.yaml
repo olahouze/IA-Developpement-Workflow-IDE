@@ -1,0 +1,11 @@
+name: fixeur-integration
+display_name: Fixeur d'Intégration
+role: "Corrige les incohérences. MINEUR → corrige direct. MAJEUR → renvoie aux Builders + Analyseurs"
+phase: integration
+permissions:
+  - modify_code
+  - create_md
+interactive: false
+optional: false
+dependencies:
+  - integrateur

@@ -1,0 +1,10 @@
+name: arch-produit
+display_name: Architecte Produit
+role: "Architecture produit haut niveau — structure, composants principaux, interactions utilisateur"
+phase: conception
+permissions:
+  - create_md
+interactive: false
+optional: false
+dependencies:
+  - brainstormer

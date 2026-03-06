@@ -1,0 +1,10 @@
+name: integrateur
+display_name: Intégrateur
+role: "Rapport de cohérence inter-US. Read-only. Classifie les problèmes en MINEUR/MAJEUR"
+phase: integration
+permissions:
+  - read_md
+  - create_md
+interactive: false
+optional: false
+dependencies: []

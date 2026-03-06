@@ -1,0 +1,10 @@
+name: agent-memoire
+display_name: Agent Mémoire
+role: "Gardien de la mémoire collective. Tourne après chaque agent. Format standardisé. Gère contradictions inter-US"
+phase: transversal
+permissions:
+  - create_md
+  - update_config
+interactive: false
+optional: false
+dependencies: []

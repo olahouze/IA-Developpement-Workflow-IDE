@@ -1,0 +1,10 @@
+name: arch-metier
+display_name: Architecte Métier
+role: "Architecture métier — domaine, règles business, modèle de données conceptuel"
+phase: conception
+permissions:
+  - create_md
+interactive: false
+optional: false
+dependencies:
+  - arch-produit

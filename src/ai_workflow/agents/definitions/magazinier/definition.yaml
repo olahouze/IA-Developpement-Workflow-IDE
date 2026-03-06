@@ -1,0 +1,10 @@
+name: magazinier
+display_name: Magazinier
+role: "Enrichit le projet avec skills/instructions depuis des repos distants. 2 passes, 2 modes (init/maintenance), remplacement aveugle"
+phase: approvisionnement
+permissions:
+  - add_config
+  - update_config
+interactive: false
+optional: false
+dependencies: []

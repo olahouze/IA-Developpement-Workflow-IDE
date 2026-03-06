@@ -1,0 +1,11 @@
+name: testeur
+display_name: Testeur
+role: "Écrit et maintient les tests. Son code est analysé comme celui du Développeur"
+phase: construction
+permissions:
+  - modify_code
+  - create_md
+interactive: false
+optional: false
+dependencies:
+  - developpeur

@@ -1,0 +1,43 @@
+# Configuration par défaut du système AI Workflow Engine
+
+workflow_dir: ".ai-workflow"
+
+# Sous-dossiers créés par `ai-workflow init`
+directories:
+  - skills
+  - instructions
+  - reports
+  - us
+  - docs
+
+# Profil projet
+profile:
+  max_lines: 500
+  filename: "profil_projet.md"
+
+# Workflows disponibles
+workflows:
+  vierge: "workflow_projet_vierge.yaml"
+  existant: "workflow_projet_existant.yaml"
+  feature: "workflow_feature.yaml"
+
+# Seuils de verdict
+verdict:
+  max_fail_iterations: 4
+  blocking_analyzers:
+    - analyseur-secu
+    - analyseur-perf
+  non_blocking_analyzers:
+    - analyseur-bp
+
+# Magazinier — sources par défaut
+magazinier:
+  sources: []
+  temp_dir: ".ai-workflow/.tmp-magazinier"
+
+# Cartographe — rescan complet
+cartographe:
+  rescan_threshold: 10
+
+# State fichier
+state_file: "state.json"

@@ -1,0 +1,57 @@
+# Profil Projet : {{ profile.project_name }}
+
+## Identité
+
+- Nom : {{ profile.project_name }}
+- Type : {{ profile.project_type }}
+- Description : {{ profile.description }}
+- Langage : {{ profile.language }}
+- Framework : {{ profile.framework }}
+
+## Contraintes Cyber
+{% for c in profile.security_constraints %}
+- {{ c }}
+{% endfor %}
+{% if not profile.security_constraints %}
+- (aucune contrainte définie)
+{% endif %}
+
+## Contraintes Entreprise
+{% for c in profile.enterprise_constraints %}
+- {{ c }}
+{% endfor %}
+{% if not profile.enterprise_constraints %}
+- (aucune contrainte définie)
+{% endif %}
+
+## Conventions
+{% for key, value in profile.conventions.items() %}
+- **{{ key }}** : {{ value }}
+{% endfor %}
+{% if not profile.conventions %}
+- (aucune convention définie)
+{% endif %}
+
+## Surcharge Skills
+{% for key, value in profile.skill_overrides.items() %}
+- **{{ key }}** : {{ value }}
+{% endfor %}
+{% if not profile.skill_overrides %}
+- (aucune surcharge)
+{% endif %}
+
+## Contexte Auto-Détecté
+
+- iterations_since_full_scan : {{ profile.iterations_since_full_scan }}
+- last_full_scan_iteration : {{ profile.last_full_scan_iteration }}
+{% for pat in profile.detected_patterns %}
+- {{ pat }}
+{% endfor %}
+
+## Mémoire Évolutive
+{% for entry in profile.memory_entries %}
+- [{{ entry.source_agent }}][{{ entry.source_us }}] {{ entry.content }}
+{% endfor %}
+{% if not profile.memory_entries %}
+- (mémoire vide)
+{% endif %}
