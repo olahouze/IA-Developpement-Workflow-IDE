@@ -48,12 +48,28 @@ COPILOT_ITEMS = [
     (BUNDLE_DIR / ".github" / "copilot-instructions.md", ".github/copilot-instructions.md"),
 ]
 
+# Template .ai-workflow/ dans le bundle (déployé si absent sur la cible)
+AI_WORKFLOW_TEMPLATE = BUNDLE_DIR / ".ai-workflow"
+
 AIDE_MARKER_START = "<!-- AIDE:START -->"
 AIDE_MARKER_END = "<!-- AIDE:END -->"
 AIDE_PREFIX = "AIDE-"
 
 DEFAULT_BRANCH = "feat/ai-workflow-engine"
-COMMIT_MESSAGE = "feat: deploy AI Workflow Engine v0.1.0"
+
+
+def _read_version() -> str:
+    """Lit la version depuis pyproject.toml."""
+    pyproject = SCRIPT_DIR / "pyproject.toml"
+    if not pyproject.exists():
+        return "0.0.0"
+    content = pyproject.read_text(encoding="utf-8")
+    match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+    return match.group(1) if match else "0.0.0"
+
+
+VERSION = _read_version()
+COMMIT_MESSAGE = f"feat: deploy AI Workflow Engine v{VERSION}"
 
 
 # ── Couleurs ────────────────────────────────────────────────────────────────
@@ -283,6 +299,7 @@ def configure_target(
         "@@PROJECT_NAME@@": project_name,
         "@@USER_NAME@@": user_name,
         "@@LANG@@": lang,
+        "@@VERSION@@": VERSION,
     }
 
     # Remplacer les placeholders dans les fichiers .github/ AIDE
@@ -309,15 +326,37 @@ def configure_target(
         if replaced_count and not dry_run:
             success(f"Placeholders remplacés dans {replaced_count} fichier(s)")
 
-    # Créer la structure .ai-workflow/
-    ai_dir = dest / ".ai-workflow"
-    subdirs = ["skills", "instructions", "reports", "us", "docs"]
+    # Déployer le template .ai-workflow/ depuis le bundle (seulement si absent)
+    _deploy_ai_workflow_template(dest, dry_run=dry_run)
+
+
+def _deploy_ai_workflow_template(dest: Path, *, dry_run: bool = False) -> None:
+    """Copie le template .ai-workflow/ depuis le bundle (seulement si le dossier n'existe pas)."""
+    target_dir = dest / ".ai-workflow"
+    if target_dir.exists():
+        info(".ai-workflow/ existe déjà, skip du template")
+        return
+
+    if not AI_WORKFLOW_TEMPLATE.exists():
+        # Fallback: créer les sous-dossiers manuellement
+        subdirs = ["skills", "instructions", "reports", "us", "docs"]
+        if dry_run:
+            info("[dry-run] Créerait .ai-workflow/ avec sous-dossiers")
+        else:
+            for subdir in subdirs:
+                (target_dir / subdir).mkdir(parents=True, exist_ok=True)
+            success("Créé : .ai-workflow/ (skills, instructions, reports, us, docs)")
+        return
+
     if dry_run:
-        info("[dry-run] Créerait .ai-workflow/ avec sous-dossiers")
-    else:
-        for subdir in subdirs:
-            (ai_dir / subdir).mkdir(parents=True, exist_ok=True)
-        success("Créé : .ai-workflow/ (skills, instructions, reports, us, docs)")
+        info("[dry-run] Copierait le template .ai-workflow/ depuis le bundle")
+        return
+
+    shutil.copytree(AI_WORKFLOW_TEMPLATE, target_dir, dirs_exist_ok=True)
+    # Supprimer les .gitkeep du template (inutiles sur la cible)
+    for gitkeep in target_dir.rglob(".gitkeep"):
+        gitkeep.unlink()
+    success("Créé : .ai-workflow/ (depuis le template bundle)")
 
 
 # ── Déploiement local ───────────────────────────────────────────────────────
@@ -326,18 +365,24 @@ def deploy_local(
     target_path: Path,
     *,
     dry_run: bool = False,
+    copilot_only: bool = False,
     project_name: str = "",
     user_name: str = "",
     lang: str = "French",
 ) -> None:
     """Déploie les fichiers vers un dossier local."""
     info(f"Cible locale : {_c(Colors.CYAN, str(target_path))}")
+    if copilot_only:
+        info("Mode --copilot-only : seuls les fichiers Copilot sont déployés")
 
     if not dry_run:
         target_path.mkdir(parents=True, exist_ok=True)
 
-    # 1. Copier les fichiers engine
-    copied = copy_deploy_items(target_path, dry_run=dry_run)
+    copied: list[str] = []
+
+    # 1. Copier les fichiers engine (sauf en mode copilot-only)
+    if not copilot_only:
+        copied = copy_deploy_items(target_path, dry_run=dry_run)
 
     # 2. Déployer les fichiers Copilot (fusion non-destructive)
     copilot_copied = deploy_copilot_files(target_path, dry_run=dry_run)
@@ -374,6 +419,7 @@ def deploy_git(
     *,
     branch: str,
     dry_run: bool = False,
+    copilot_only: bool = False,
     default_branch: str = "main",
     project_name: str = "",
     user_name: str = "",
@@ -382,6 +428,8 @@ def deploy_git(
     """Clone le repo, crée une branche, copie les fichiers, commit + push."""
     info(f"Cible Git : {_c(Colors.CYAN, url)}")
     info(f"Branche   : {_c(Colors.CYAN, branch)}")
+    if copilot_only:
+        info("Mode --copilot-only : seuls les fichiers Copilot sont déployés")
 
     # 1. Tester l'accès Git
     clone_url = url
@@ -395,7 +443,9 @@ def deploy_git(
 
     if dry_run:
         info("[dry-run] Clonerais le repo, créerais la branche, copierais les fichiers, push.")
-        copy_deploy_items(Path("/tmp/dry-run-target"), dry_run=True)
+        if not copilot_only:
+            copy_deploy_items(Path("/tmp/dry-run-target"), dry_run=True)
+        deploy_copilot_files(Path("/tmp/dry-run-target"), dry_run=True)
         return
 
     # 2. Clone dans un dossier temporaire
@@ -433,7 +483,8 @@ def deploy_git(
         success(f"Sur la branche : {branch}")
 
         # 6. Copier les fichiers
-        copy_deploy_items(repo_dir, dry_run=False)
+        if not copilot_only:
+            copy_deploy_items(repo_dir, dry_run=False)
         deploy_copilot_files(repo_dir, dry_run=False)
 
         # 6b. Configurer la cible
@@ -532,6 +583,11 @@ Exemples:
         help="Langue de communication (défaut: French)",
     )
     parser.add_argument(
+        "--copilot-only",
+        action="store_true",
+        help="Déploie uniquement les fichiers Copilot (agents, prompts, instructions) sans l'engine Python",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Affiche les actions sans les exécuter",
@@ -539,13 +595,17 @@ Exemples:
     return parser.parse_args()
 
 
-def validate_sources() -> None:
+def validate_sources(*, copilot_only: bool = False) -> None:
     """Vérifie que les sources de déploiement existent."""
-    for source, rel_dest in DEPLOY_ITEMS:
+    if not copilot_only:
+        for source, rel_dest in DEPLOY_ITEMS:
+            if not source.exists():
+                error(f"Source manquante : {source}")
+                error("Lancez ce script depuis la racine du projet IA-Developpement-Workflow-IDE.")
+                sys.exit(1)
+    for source, rel_dest in COPILOT_ITEMS:
         if not source.exists():
-            error(f"Source manquante : {source}")
-            error("Lancez ce script depuis la racine du projet IA-Developpement-Workflow-IDE.")
-            sys.exit(1)
+            warn(f"Source Copilot manquante : {source}")
 
 
 def main() -> None:
@@ -556,7 +616,8 @@ def main() -> None:
         warn("Mode dry-run — aucune modification ne sera effectuée.")
         print()
 
-    validate_sources()
+    info(f"AIDE version : {_c(Colors.CYAN, VERSION)}")
+    validate_sources(copilot_only=args.copilot_only)
 
     target = args.target
 
@@ -565,6 +626,7 @@ def main() -> None:
             target,
             branch=args.branch,
             dry_run=args.dry_run,
+            copilot_only=args.copilot_only,
             project_name=args.project_name,
             user_name=args.user_name,
             lang=args.lang,
@@ -573,6 +635,7 @@ def main() -> None:
         deploy_local(
             Path(target).resolve(),
             dry_run=args.dry_run,
+            copilot_only=args.copilot_only,
             project_name=args.project_name,
             user_name=args.user_name,
             lang=args.lang,

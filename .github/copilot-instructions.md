@@ -56,3 +56,56 @@
 
 Type `/bmad-` in Copilot Chat to see all available BMAD workflows and agent activators. Agents are also available in the agents dropdown.
 <!-- BMAD:END -->
+
+<!-- AIDE:START -->
+# AIDE (AI Development Engine) — Product Instructions
+
+> Ce dépôt développe AIDE. Les sections BMAD ci-dessus sont pour le **développement interne**.
+> Les sections AIDE ci-dessous décrivent le **produit déployable** vers les projets cibles.
+
+## Structure du Produit
+
+- **Bundle** : `bundle/.github/` — 17 agents (`AIDE-*.agent.md`) + 5 workflows (`AIDE-*.prompt.md`) + `copilot-instructions.md`
+- **Engine** : `engine/src/ai_workflow/` — Moteur Python (machine à états, runners, fork/join)
+- **Déploiement** : `deploy.py` — Déploie bundle + engine vers un projet local ou Git distant
+- **Template** : `bundle/.ai-workflow/` — Structure de workspace déployée sur la cible
+
+## Agents AIDE (17)
+
+| Agent | Phase | Rôle |
+|---|---|---|
+| AIDE-brainstormer | Conception | Clarifier la vision et les objectifs |
+| AIDE-arch-produit | Conception | Architecture produit haut niveau |
+| AIDE-arch-metier | Conception | Domaine métier, règles business |
+| AIDE-arch-gui | Conception | Interfaces utilisateur, navigation |
+| AIDE-arch-technique | Conception | Stack technique, patterns, structure |
+| AIDE-cartographe | Approvisionnement | Scan repo, profil_projet.md |
+| AIDE-magazinier | Approvisionnement | Skills, instructions réutilisables |
+| AIDE-orchestrateur | Orchestration | US, batches, dépendances |
+| AIDE-developpeur | Construction | Implémentation du code |
+| AIDE-testeur | Construction | Tests unitaires et fonctionnels |
+| AIDE-analyseur-secu | Analyse | Sécurité (bloquant) |
+| AIDE-analyseur-perf | Analyse | Performance (bloquant) |
+| AIDE-analyseur-bp | Analyse | Bonnes pratiques (non-bloquant) |
+| AIDE-integrateur | Intégration | Cohérence inter-US |
+| AIDE-fixeur-integration | Intégration | Corrections post-intégration |
+| AIDE-documentaliste | Finalisation | Documentation globale |
+| AIDE-agent-memoire | Transversal | Mémoire projet, profil_projet.md |
+
+## Workflows AIDE (5)
+
+| Commande | Description |
+|---|---|
+| `/AIDE-workflow-init` | Initialiser `.ai-workflow/` |
+| `/AIDE-workflow-vierge` | Nouveau projet complet (14 états) |
+| `/AIDE-workflow-existant` | Enrichir un projet existant (10 états) |
+| `/AIDE-workflow-feature` | Ajouter une feature (7 états) |
+| `/AIDE-workflow-status` | Afficher l'état courant |
+
+## Coexistence BMAD / AIDE
+
+- `/bmad-*` et `@bmad-*` = **développement interne** de ce dépôt (méthode BMAD)
+- `/AIDE-*` et `@AIDE-*` = **produit** déployé vers les projets cibles
+- L'engine (`engine/`) et le bundle (`bundle/`) n'ont **aucune dépendance** vers BMAD
+- Voir `docs/BMAD-AIDE-Coexistence.md` pour les détails
+<!-- AIDE:END -->

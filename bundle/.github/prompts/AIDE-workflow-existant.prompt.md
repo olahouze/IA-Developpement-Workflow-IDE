@@ -75,3 +75,8 @@ Mettre à jour `.ai-workflow/state.json` après chaque étape :
   "is_complete": false
 }
 ```
+
+## Mode d'exécution
+
+Ce workflow fonctionne en **mode Copilot natif** : chaque étape est pilotée manuellement dans Copilot Chat.
+Pour l'orchestration automatisée avec machine à états, utilisez : `ai-workflow run --workflow existant`

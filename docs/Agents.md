@@ -1,137 +1,150 @@
-# Agents — Catalog des 15 Agents Spécialisés
+# AIDE — Catalog des 17 Agents Spécialisés
 
-Index centralisé des agents IA disponibles dans l'AI Workflow Engine. Chaque agent a un fichier détaillé avec profil, prompts, tools et exemples.
+Index centralisé des 17 agents AIDE disponibles pour le développement de projets. Chaque agent est déployé sous forme de fichier `.agent.md` auto-suffisant, utilisable dans GitHub Copilot via `@AIDE-<nom>`.
 
-## 📊 Vue d'ensemble
+## Vue d'ensemble
 
-Les agents sont organisés par domaine :
+Les agents sont organisés par **phase de développement** :
 
-| Catégorie | Agents | Rôle |
-|-----------|--------|------|
-| **🎭 Orchestration** | [BMAD Master](agents/bmad-master.md) | Contrôle & coordination |
-| **🔍 Discovery** | [Analyst](agents/analyst.md), [Researcher](agents/researcher.md), [Product Manager](agents/product-manager.md), [UX Designer](agents/ux-designer.md) | Découverte & spécification |
-| **🏗️ Architecture** | [Architect](agents/architect.md), [Security Expert](agents/security.md) | Design & compliance |
-| **💻 Development** | [Developer](agents/developer.md), [Quick Flow Solo Dev](agents/quick-flow-solo-dev.md) | Implémentation |
-| **✅ Quality & DevOps** | [QA Engineer](agents/qa.md), [Testing Specialist](agents/testing-specialist.md), [Code Reviewer](agents/code-reviewer.md), [DevOps Engineer](agents/devops.md) | Tests & déploiement |
-| **📚 Support** | [Tech Writer](agents/tech-writer.md), [Scrum Master](agents/scrum-master.md) | Documentation & processus |
-
-
-
----
-
-## 🔗 Agents Détaillés
-
-Pour chaque agent, cliquez sur le lien pour accéder à la documentation complète avec système prompt, tools et exemples.
-
-### 🎭 Orchestration & Coordination
-
-- **[1. BMAD Master](agents/bmad-master.md)** — Orchestrateur principal, gestion ressources
-
-### 🔍 Discovery & Research (4 agents)
-
-- **[2. Analyst](agents/analyst.md)** (Mary) — Business Analysis, market research, requirements
-- **[3. Researcher](agents/researcher.md)** — Deep exploration, market sizing, insights  
-- **[4. Product Manager](agents/product-manager.md)** (John) — PRD creation, stakeholder alignment
-- **[5. UX Designer](agents/ux-designer.md)** (Sally) — User research, wireframing, accessibility
-
-### 🏗️ Architecture & Security (2 agents)
-
-- **[6. Architect](agents/architect.md)** (Winston) — System design, scalability, tech decisions
-- **[7. Security Expert](agents/security.md)** — Threat modeling, compliance, vulnerability assessment
-
-### 💻 Development & Implementation (2 agents)
-
-- **[8. Developer](agents/developer.md)** (Amelia) — Code implementation, TDD, full-stack
-- **[9. Quick Flow Solo Dev](agents/quick-flow-solo-dev.md)** (Barry) — MVP rapid, lean implementation
-
-### ✅ Quality & Deployment (4 agents)
-
-- **[10. QA Engineer](agents/qa.md)** (Quinn) — Test automation, E2E, coverage
-- **[11. Testing Specialist](agents/testing-specialist.md)** — Test strategy, baselines, metrics
-- **[12. Code Reviewer](agents/code-reviewer.md)** — Code quality, design patterns, standards
-- **[13. DevOps Engineer](agents/devops.md)** — Infrastructure, CI/CD, monitoring, reliability
-
-### 📚 Support & Process (2 agents)
-
-- **[14. Tech Writer](agents/tech-writer.md)** (Paige) — Documentation, diagrams, API docs
-- **[15. Scrum Master](agents/scrum-master.md)** (Bob) — Sprint planning, ceremonies, velocity
+| Phase | Agents | Rôle |
+|-------|--------|------|
+| **Conception** | `@AIDE-brainstormer`, `@AIDE-arch-produit`, `@AIDE-arch-metier`, `@AIDE-arch-gui`, `@AIDE-arch-technique` | Vision, architecture produit/métier/GUI/technique |
+| **Approvisionnement** | `@AIDE-cartographe`, `@AIDE-magazinier` | Scan repo, enrichissement en skills |
+| **Orchestration** | `@AIDE-orchestrateur` | Décomposition en US, batches parallèles |
+| **Construction** | `@AIDE-developpeur`, `@AIDE-testeur` | Code + tests |
+| **Analyse** | `@AIDE-analyseur-secu`, `@AIDE-analyseur-perf`, `@AIDE-analyseur-bp` | Sécurité, performance, bonnes pratiques |
+| **Intégration** | `@AIDE-integrateur`, `@AIDE-fixeur-integration` | Cohérence inter-US, corrections |
+| **Finalisation** | `@AIDE-documentaliste` | Documentation globale |
+| **Transversal** | `@AIDE-agent-memoire` | Mémoire collective |
 
 ---
 
-## 🎯 Organiser les Agents par Workflow
+## Agents Détaillés
 
-### Brainstorming (séquence : 3 agents)
-1. [Analyst](agents/analyst.md) — Analyser requirements
-2. [Architect](agents/architect.md) — Designer solution
-3. [Developer](agents/developer.md) — Implémenter
+### Conception (5 agents)
 
-### Party Mode (parallèle : 4 agents)
-- [Product Manager](agents/product-manager.md) — Perspective produit
-- [UX Designer](agents/ux-designer.md) — Perspective design
-- [Architect](agents/architect.md) — Perspective architecture
-- [Developer](agents/developer.md) — Perspective implémentation
+- **`@AIDE-brainstormer`** — Facilitateur créatif. Clarifie la vision, produit un brief structuré. Point de départ recommandé pour tout nouveau projet.
 
-### Advanced Elicitation (itératif : 4 agents)
-1. [Analyst](agents/analyst.md) — Analyse initiale
-2. [Researcher](agents/researcher.md) — Deep research (itérations)
-3. [Product Manager](agents/product-manager.md) — PRD création
-4. [UX Designer](agents/ux-designer.md) — Design refinement
+- **`@AIDE-arch-produit`** — Architecture produit haut niveau. Définit les composants majeurs, leurs interactions et les frontières du système.
 
-### Full Project Cycle (complet : 8+ agents)
-1. [Analyst](agents/analyst.md) — Validation
-2. [Product Manager](agents/product-manager.md) — Specification
-3. [Architect](agents/architect.md) — Design
-4. [Developer](agents/developer.md) — Building
-5. [QA Engineer](agents/qa.md) — Testing
-6. [Security Expert](agents/security.md) — Security audit
-7. [DevOps Engineer](agents/devops.md) — Deployment
-8. [Tech Writer](agents/tech-writer.md) — Documentation
+- **`@AIDE-arch-metier`** — Architecture métier. Modélise le domaine, les règles business, le modèle conceptuel (entités, relations).
+
+- **`@AIDE-arch-gui`** — Architecture GUI (optionnel). Conçoit les interfaces, composants UI, navigation. Utile pour les projets avec frontend.
+
+- **`@AIDE-arch-technique`** — Architecture technique. Choisit la stack, les patterns, la structure de fichiers du projet.
+
+### Approvisionnement (2 agents)
+
+- **`@AIDE-cartographe`** — Scanne le repo existant, identifie les conventions en place, et construit le `profil_projet.md` (mémoire du projet, ≤500 lignes).
+
+- **`@AIDE-magazinier`** — Enrichit le projet avec des skills et instructions depuis des sources externes (fichiers `.md` dans `.ai-workflow/skills/`).
+
+### Orchestration (1 agent)
+
+- **`@AIDE-orchestrateur`** — Décompose le projet en User Stories (US), analyse les dépendances, crée des batches de US parallélisables. Produit le plan d'exécution.
+
+### Construction (2 agents)
+
+- **`@AIDE-developpeur`** — Implémente le code de l'US. Relit tout le contexte à chaque itération (profil, skills, rapports précédents). Produit un rapport `developpeur_report_iter<N>.md`.
+
+- **`@AIDE-testeur`** — Écrit et maintient les tests. Analyse le code produit par le développeur. Produit un rapport `testeur_report_iter<N>.md`.
+
+### Analyse (3 agents)
+
+Ces trois agents s'exécutent **en parallèle** après le développement et le test.
+
+- **`@AIDE-analyseur-secu`** — Analyse sécurité (OWASP Top 10). Verdict PASS/FAIL **bloquant**. Un FAIL empêche la validation de l'US.
+
+- **`@AIDE-analyseur-perf`** — Analyse performance (complexité algorithmique, I/O, mémoire). Verdict PASS/FAIL **bloquant**.
+
+- **`@AIDE-analyseur-bp`** — Analyse bonnes pratiques (DRY, SOLID, conventions). Verdict **non-bloquant** seul : un FAIL BP ne bloque pas si les autres analyses passent.
+
+### Intégration (2 agents)
+
+- **`@AIDE-integrateur`** — Vérifie la cohérence inter-US en mode read-only. Classifie les problèmes en MINEUR ou MAJEUR.
+
+- **`@AIDE-fixeur-integration`** — Corrige les incohérences. MINEUR → corrige directement ; MAJEUR → renvoie aux agents de construction.
+
+### Finalisation (1 agent)
+
+- **`@AIDE-documentaliste`** — Produit la documentation technique et utilisateur globale du projet. Synthétise les rapports de tous les agents.
+
+### Transversal (1 agent)
+
+- **`@AIDE-agent-memoire`** — Gardien de la mémoire collective. Tourne après chaque agent pour collecter les découvertes et les intégrer au `profil_projet.md`. Déduplique et élague automatiquement.
 
 ---
 
-## 📊 Sélectionner par Cas d'Usage
+## Organiser les Agents par Workflow
 
-| Cas | Agents |
-|-----|--------|
-| **MVP Rapide** | [Quick Flow Solo Dev](agents/quick-flow-solo-dev.md), [Developer](agents/developer.md) |
-| **Système Enterprise** | [Analyst](agents/analyst.md), [Architect](agents/architect.md), [Security Expert](agents/security.md), [DevOps Engineer](agents/devops.md), [QA Engineer](agents/qa.md) |
-| **Startup Discovery** | [Analyst](agents/analyst.md), [Product Manager](agents/product-manager.md), [UX Designer](agents/ux-designer.md) |
-| **Scale to 1M Users** | [Researcher](agents/researcher.md), [Architect](agents/architect.md), [DevOps Engineer](agents/devops.md) |
-| **Compliance/Regulatory** | [Security Expert](agents/security.md), [Tech Writer](agents/tech-writer.md) |
+### `/AIDE-workflow-vierge` — Nouveau projet (14 étapes)
 
----
-
-## 💡 Bonnes Pratiques
-
-### ✅ Chaîner logiquement
-
-```yaml
-steps:
-  - agent: analyst        # Comprendre
-  - agent: architect      # Designer
-  - agent: developer      # Implémenter
-  - agent: qa             # Tester
-  - agent: devops         # Déployer
+```
+@AIDE-brainstormer
+  → @AIDE-arch-produit
+  → @AIDE-arch-metier
+  → @AIDE-arch-gui (optionnel)
+  → @AIDE-arch-technique
+    → @AIDE-cartographe
+    → @AIDE-magazinier
+      → @AIDE-orchestrateur
+        → Pour chaque batch d'US :
+            @AIDE-developpeur → @AIDE-testeur → Analyseurs (×3) → Verdict
+          → @AIDE-integrateur → @AIDE-fixeur-integration
+            → @AIDE-documentaliste
 ```
 
-### ✅ Passer le contexte
+### `/AIDE-workflow-existant` — Projet existant (10 étapes)
 
-```yaml
-steps:
-  - agent: analyst
-    inputs:
-      requirements: "{{ user_input }}"
-  
-  - agent: architect
-    inputs:
-      analysis: "{{ steps[0].output }}"  # Output du step précédent
+```
+@AIDE-cartographe (scan repo)
+  → @AIDE-brainstormer (brainstorming léger)
+    → @AIDE-arch-technique (raffinement)
+      → @AIDE-orchestrateur
+        → Boucle batch_builders (Dev → Test → Analyse → Verdict)
+          → @AIDE-integrateur → @AIDE-fixeur-integration
+            → @AIDE-documentaliste
 ```
 
-### ❌ Erreurs à éviter
+### `/AIDE-workflow-feature` — Ajout de feature (7 étapes)
 
-- Un seul agent fait tout → Utiliser agents spécialisés
-- Coder sans requirements → Commencer par [Analyst](agents/analyst.md)
-- Ignorer sécurité → Inclure [Security Expert](agents/security.md)
-- Pas de tests → Ajouter [Testing Specialist](agents/testing-specialist.md)
-- Déployer sans infra → Impliquer [DevOps Engineer](agents/devops.md)
+```
+@AIDE-cartographe (scan rapide)
+  → @AIDE-orchestrateur (1 batch)
+    → @AIDE-developpeur → @AIDE-testeur → Analyseurs → Verdict
+      → @AIDE-documentaliste
+```
+
+---
+
+## Sélectionner par Cas d'Usage
+
+| Cas | Agents recommandés |
+|-----|-----|
+| **MVP Rapide** | `@AIDE-brainstormer` → `@AIDE-arch-technique` → `@AIDE-developpeur` → `@AIDE-testeur` |
+| **Projet Enterprise** | Workflow complet (17 agents) |
+| **Audit Sécurité** | `@AIDE-cartographe` → `@AIDE-analyseur-secu` → `@AIDE-analyseur-perf` |
+| **Bug Fix** | `@AIDE-cartographe` → `@AIDE-developpeur` → `@AIDE-testeur` → `@AIDE-analyseur-secu` |
+| **Documentation** | `@AIDE-cartographe` → `@AIDE-documentaliste` |
+| **Découverte** | `@AIDE-brainstormer` → `@AIDE-arch-produit` → `@AIDE-arch-metier` |
+
+---
+
+## Bonnes Pratiques
+
+### Chaîner logiquement
+
+Respecter l'ordre des phases : Conception → Approvisionnement → Orchestration → Construction → Analyse → Intégration → Finalisation.
+
+### Toujours scanner avant de coder
+
+Sur un projet existant, commencer par `@AIDE-cartographe` pour construire le profil projet. Les agents suivants utilisent ce profil.
+
+### Utiliser la mémoire
+
+`@AIDE-agent-memoire` doit tourner après chaque agent pour capturer les découvertes. Le profil projet s'enrichit à chaque passage.
+
+### Ne pas ignorer les verdicts bloquants
+
+Un FAIL de `@AIDE-analyseur-secu` ou `@AIDE-analyseur-perf` doit être résolu avant de valider l'US. Le retry automatique relance `@AIDE-developpeur` avec les remarques des analyseurs.
 

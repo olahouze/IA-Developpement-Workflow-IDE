@@ -1,279 +1,201 @@
-# AI Workflow Engine — IDE Développement d'Agents IA
+# AIDE — AI Development Engine
 
-> Moteur d'orchestration et d'exécution de workflows avec agents IA spécialisés, inspiré par la méthode BMAD (Business Modelling & Agency Design).
+> **AIDE** (AI Development Engine) orchestre 17 agents IA spécialisés pour développer un projet de bout en bout :
+> conception → architecture → planification → développement → tests → analyse → intégration → documentation.
 
-## 🚀 Démarrage Rapide
+## Démarrage Rapide
 
-### Installation
+### Déployer AIDE sur un projet cible
 
 ```bash
-# Cloner le projet
-git clone https://gitlab.example.com/olahouze/IA-Developpement-Workflow-IDE.git
+# Cloner ce dépôt
+git clone https://github.com/olahouze/IA-Developpement-Workflow-IDE.git
 cd IA-Developpement-Workflow-IDE
-
-# Installer les dépendances
 uv sync
 
-# Initialiser un projet
-ai-workflow init --name mon-projet-exemple
+# Déployer AIDE dans un projet local
+python deploy.py /chemin/vers/mon-projet
+
+# Déployer uniquement les agents Copilot (sans le moteur Python)
+python deploy.py /chemin/vers/mon-projet --copilot-only
+
+# Déployer dans un repo Git distant
+python deploy.py https://gitlab.example.com/org/repo.git --branch feat/aide
 ```
 
-### Utilisation basique
+### Utiliser AIDE dans le projet cible
 
-```bash
-# Lister les agents disponibles
-ai-workflow agents
+Ouvrir le projet cible dans VS Code, puis dans Copilot Chat :
 
-# Voir l'état d'un workflow
-ai-workflow status
-
-# Exécuter un workflow
-ai-workflow run --workflow brainstorming
+```
+/AIDE-workflow-init              → Initialiser le workspace .ai-workflow/
+/AIDE-workflow-vierge            → Nouveau projet (14 étapes)
+/AIDE-workflow-existant          → Enrichir un projet existant (10 étapes)
+/AIDE-workflow-feature           → Ajouter une feature (7 étapes)
+/AIDE-workflow-status            → Voir l'état courant
 ```
 
-## 📁 Structure du Projet
+Les agents sont disponibles via `@AIDE-` dans le menu agents Copilot :
+
+```
+@AIDE-brainstormer               → Facilitateur créatif
+@AIDE-developpeur                → Implémente le code
+@AIDE-testeur                    → Écrit les tests
+@AIDE-analyseur-secu             → Analyse sécurité (OWASP)
+...et 13 autres
+```
+
+## Structure du Projet
 
 ```
 IA-Developpement-Workflow-IDE/
-├── src/ai_workflow/                    # Code source principal
-│   ├── cli.py                         # Interface ligne de commande (Typer)
-│   ├── config/
-│   │   ├── defaults.yaml              # Configuration par défaut
-│   │   └── schema.py                  # Pydantic models de configuration
-│   ├── models/                        # Modèles de données
-│   │   ├── agent.py                  # Définition d'un agent
-│   │   ├── workflow.py                # Définition d'un workflow
-│   │   ├── verdict.py                 # Verdict d'exécution
-│   │   └── profile.py                 # Profils utilisateur
-│   ├── managers/                      # Gestionnaires métier
-│   │   ├── file_manager.py            # Gestion des fichiers
-│   │   ├── memory_manager.py          # Gestion de la mémoire
-│   │   ├── skill_manager.py           # Gestion des compétences
-│   │   └── context_builder.py         # Construction du contexte
-│   ├── engine/                        # Moteur d'exécution
-│   │   ├── workflow_engine.py         # Orchestration des workflows
-│   │   ├── agent_runner.py            # Exécution des agents
-│   │   ├── fork_join.py               # Pattern fork/join pour parallélisation
-│   │   └── verdict.py                 # Logique de verdict
-│   ├── agents/                        # 17 agents spécialisés
-│   │   ├── registry.py               # Registre centralisé des agents
-│   │   └── [agent-name]/             # Dossier par agent
-│   │       ├── config.yaml           # Configuration de l'agent
-│   │       ├── system_prompt.md      # Prompt système
-│   │       └── tools.yaml            # Outils disponibles
-│   ├── workflows/                     # Définitions de workflows
-│   │   ├── brainstorming.yaml        # Workflow brainstorming
-│   │   ├── party-mode.yaml           # Workflow collaboratif
-│   │   └── advanced-elicitation.yaml # Workflow avancé
-│   ├── templates/                     # Templates Jinja2
-│   │   ├── agent_prompt.j2           # Template prompt agent
-│   │   ├── workflow_summary.j2       # Résumé workflow
-│   │   └── memory_snapshot.j2        # Snapshot mémoire
-│   └── __init__.py                   # Package initialization
-├── bundle/                             # Assets de déploiement
-│   ├── pyproject.toml                # Config for distributed projects
-│   └── README.md                     # docs utilisateur déployées
+├── bundle/                             # Produit AIDE livrable
+│   ├── .github/
+│   │   ├── agents/                    # 17 fichiers AIDE-*.agent.md
+│   │   ├── prompts/                   # 5 fichiers AIDE-workflow-*.prompt.md
+│   │   └── copilot-instructions.md    # Instructions Copilot (avec placeholders)
+│   └── .ai-workflow/                  # Template structure du workspace
+├── engine/                             # Moteur d'exécution Python (optionnel)
+│   ├── src/ai_workflow/               # Code source
+│   │   ├── cli.py                     # CLI Typer (ai-workflow)
+│   │   ├── agents/definitions/        # 17 agents (YAML + Jinja2)
+│   │   ├── workflows/                 # 3 workflows (YAML state machines)
+│   │   ├── engine/                    # WorkflowEngine, AgentRunner, ForkJoin
+│   │   ├── managers/                  # File, Memory, Skill, Context
+│   │   ├── models/                    # Agent, Workflow, Verdict, Profile
+│   │   └── templates/                 # Templates Jinja2
+│   └── tests/                         # 138 tests pytest
+├── deploy.py                          # Script de déploiement vers projet cible
+├── scripts/generate_bundle.py         # Génération du bundle depuis engine/
 ├── docs/                              # Documentation
+│   ├── Agents.md                      # Catalog des 17 agents AIDE
 │   ├── Architecture.md                # Architecture détaillée
-│   ├── Workflow.md                    # Explication des workflows
-│   ├── Agents.md                      # Catalog des 17 agents
-│   └── DeploymentGuide.md            # Guide de déploiement
-├── tests/                             # Suites de tests (pytest)
-│   ├── conftest.py                   # Fixtures pytest
-│   ├── test_models/                  # Tests modèles
-│   ├── test_managers/                # Tests managers
-│   ├── test_engine/                  # Tests moteur
-│   ├── test_agents/                  # Tests agents
-│   ├── test_workflows/               # Tests workflows
-│   └── test_cli.py                   # Tests CLI
-├── deploy.py                          # Script de déploiement vers Git/dossier
-├── pyproject.toml                     # Config projet (uv + pytest + ruff)
-└── README.md                          # Ce fichier
+│   ├── Workflow.md                    # Workflows AIDE
+│   ├── Deployment.md                  # Guide de déploiement
+│   └── BMAD-AIDE-Coexistence.md       # Séparation BMAD/AIDE
+├── _bmad/                             # Framework BMAD (développement interne)
+└── pyproject.toml                     # Configuration projet
 ```
 
-## 🏗️ Architecture
+## Deux Modes d'Exécution
 
-Le moteur fonctionne selon une architecture modulaire en 4 couches :
+### Mode Copilot Natif (recommandé)
 
-### 1. **Modèles de Données** (`models/`)
-- `Agent` : Représentation d'un agent IA spécialisé
-- `Workflow` : Orchestration d'agents en séquence/parallèle
-- `Verdict` : Résultat d'exécution (success/partial/error)
-- `Profile` : Profil utilisateur et préférences
+Les fichiers `.agent.md` et `.prompt.md` sont **complètement autonomes**. Aucun runtime Python n'est nécessaire. L'utilisateur interagit via Copilot Chat :
+- `/AIDE-workflow-*` lance un workflow pas-à-pas guidé par Copilot
+- `@AIDE-*` invoque un agent spécialisé dans la conversation
 
-### 2. **Managers** (`managers/`)
-Gestionnaires métier pour les ressources partagées :
-- **FileManager** : I/O fichiers, cache, artifacts
-- **MemoryManager** : Mémoire persistante (contexte, historique)
-- **SkillManager** : Compétences et outils disponibles pour les agents
-- **ContextBuilder** : Construit le contexte d'exécution (variables, secrets)
+### Mode Engine Python (orchestration automatisée)
 
-### 3. **Moteur d'Exécution** (`engine/`)
-- **WorkflowEngine** : Orchestre les workflows (état, transitions, erreurs)
-- **AgentRunner** : Exécute un agent unique avec un contexte
-- **ForkJoin** : Pattern parallélisation (plusieurs agents en parallèle, attendre sync)
-- **Verdict** : Évalue succès/échec/partiel d'une exécution
+Pour une orchestration avancée avec machine à états, parallélisation fork/join et verdicts automatisés :
 
-### 4. **Agents Spécialisés** (`agents/`)
-17 agents avec rôles distincts : brainstormer, analyst, architect, developer, PM, QA, tech-writer, UX designer, scrum master, etc.
+```bash
+cd mon-projet-cible
+uv sync
+ai-workflow run --workflow vierge
+```
 
-## 🤖 Agents Disponibles (15 au total)
+## Agents AIDE (17)
 
-| Agent | Rôle | Accès |
+| Agent | Rôle | Phase |
 |---|---|---|
-| **BMAD Master** | Orchestration | [docs/agents/bmad-master.md](docs/agents/bmad-master.md) |
-| **Analyst** (Mary) | Business Analysis | [docs/agents/analyst.md](docs/agents/analyst.md) |
-| **Researcher** | Deep exploration | [docs/agents/researcher.md](docs/agents/researcher.md) |
-| **Product Manager** (John) | PRD & strategy | [docs/agents/product-manager.md](docs/agents/product-manager.md) |
-| **UX Designer** (Sally) | Design & research | [docs/agents/ux-designer.md](docs/agents/ux-designer.md) |
-| **Architect** (Winston) | System design | [docs/agents/architect.md](docs/agents/architect.md) |
-| **Developer** (Amelia) | Implementation | [docs/agents/developer.md](docs/agents/developer.md) |
-| **QA Engineer** (Quinn) | Testing | [docs/agents/qa.md](docs/agents/qa.md) |
-| **Security Expert** | Compliance & audit | [docs/agents/security.md](docs/agents/security.md) |
-| **Tech Writer** (Paige) | Documentation | [docs/agents/tech-writer.md](docs/agents/tech-writer.md) |
-| **Testing Specialist** | Test strategy | [docs/agents/testing-specialist.md](docs/agents/testing-specialist.md) |
-| **Code Reviewer** | Code quality | [docs/agents/code-reviewer.md](docs/agents/code-reviewer.md) |
-| **DevOps Engineer** | Infrastructure & CI/CD | [docs/agents/devops.md](docs/agents/devops.md) |
-| **Scrum Master** (Bob) | Agile ceremonies | [docs/agents/scrum-master.md](docs/agents/scrum-master.md) |
-| **Quick Flow Solo Dev** (Barry) | MVP rapid | [docs/agents/quick-flow-solo-dev.md](docs/agents/quick-flow-solo-dev.md) |
+| `@AIDE-brainstormer` | Facilitateur créatif — clarifie la vision | Conception |
+| `@AIDE-arch-produit` | Architecture produit haut niveau | Conception |
+| `@AIDE-arch-metier` | Architecture métier — domaine, règles business | Conception |
+| `@AIDE-arch-gui` | Architecture GUI — interfaces, navigation | Conception |
+| `@AIDE-arch-technique` | Architecture technique — stack, patterns | Conception |
+| `@AIDE-cartographe` | Scanne le repo, construit le profil projet | Approvisionnement |
+| `@AIDE-orchestrateur` | Décompose en US, crée des batches parallèles | Orchestration |
+| `@AIDE-magazinier` | Enrichit avec skills/instructions externes | Approvisionnement |
+| `@AIDE-developpeur` | Implémente le code de l'US | Construction |
+| `@AIDE-testeur` | Écrit et maintient les tests | Construction |
+| `@AIDE-analyseur-secu` | Analyse sécurité OWASP (verdict **bloquant**) | Analyse |
+| `@AIDE-analyseur-perf` | Analyse performance (verdict **bloquant**) | Analyse |
+| `@AIDE-analyseur-bp` | Analyse bonnes pratiques (verdict non-bloquant) | Analyse |
+| `@AIDE-integrateur` | Cohérence inter-US (read-only) | Intégration |
+| `@AIDE-fixeur-integration` | Corrige les incohérences inter-US | Intégration |
+| `@AIDE-documentaliste` | Documentation technique et utilisateur globale | Finalisation |
+| `@AIDE-agent-memoire` | Gardien de la mémoire collective | Transversal |
 
-👉 **[Catalog complet](docs/Agents.md) avec workflows et bonnes pratiques.**
+## Workflows AIDE (3 + 2 utilitaires)
 
-## 🔄 Workflows Disponibles
+| Commande | Description | États |
+|---|---|---|
+| `/AIDE-workflow-vierge` | Projet complet : conception → livraison | 14 |
+| `/AIDE-workflow-existant` | Enrichir un projet existant | 10 |
+| `/AIDE-workflow-feature` | Ajouter une feature | 7 |
+| `/AIDE-workflow-init` | Initialiser `.ai-workflow/` | — |
+| `/AIDE-workflow-status` | État courant du workflow | — |
 
-### 1. **Brainstorming** (`workflows/brainstorming.yaml`)
-Séquence : Analyst → Architect → Developer
-- Analyzer analyse les requirements
-- Architect designs la solution
-- Developer propose l'implémentation
+## Cycle de Développement par User Story
 
-### 2. **Party Mode** (`workflows/party-mode.yaml`)
-Collaboration parallèle d'experts :
-- PM, UX Designer, Architect, Developer exécutés **en parallèle**
-- Sync final sur les decisions
-- Pattern: fork/join
-
-### 3. **Advanced Elicitation** (`workflows/advanced-elicitation.yaml`)
-Approche profonde de découverte :
-- Analyst → Researcher → PM → UX Designer (séquence + feedback loops)
-- Itération sur les insights
-
-👉 **Voir [docs/Workflow.md](docs/Workflow.md) pour les détails d'exécution.**
-
-## 🚀 Déploiement
-
-Le projet inclut un script de déploiement à la racine : **`deploy.py`**
-
-### Déployer dans un dossier local
-```bash
-python deploy.py ./mon-projet-cible
 ```
-Copie `src/ai_workflow/`, `pyproject.toml`, `README.md`, `tests/` vers la cible.
-
-### Déployer dans un repo Git (GitLab/GitHub)
-```bash
-python deploy.py https://gitlab.example.com/org/repo.git \
-  --branch feat/ai-workflow-engine
+Pour chaque US dans un batch :
+1. @AIDE-developpeur      → implémente le code
+2. @AIDE-testeur           → écrit les tests
+3. @AIDE-analyseur-secu  ┐
+   @AIDE-analyseur-perf  ├→ en parallèle
+   @AIDE-analyseur-bp    ┘
+4. Verdict :
+   - Tous PASS              → US validée
+   - FAIL bloquant          → retour dev (max 4 itérations)
+   - Seul FAIL BP           → US validée quand même
+   - ≥ 4 itérations         → ESCALADE manuelle
+5. @AIDE-agent-memoire    → collecte les découvertes
 ```
-- Clone le repo
-- Crée une branche personnalisée
-- Push les fichiers
-- (Demande un token GitLab si auth échoue)
+
+## Déploiement
+
+```bash
+# Déploiement complet (Copilot + Engine Python)
+python deploy.py ./mon-projet
+
+# Copilot uniquement (agents + workflows, sans Python)
+python deploy.py ./mon-projet --copilot-only
+
+# Repo Git distant
+python deploy.py https://gitlab.example.com/org/repo.git
+
+# Aperçu sans modifier
+python deploy.py ./mon-projet --dry-run
+```
 
 Options :
-- `--branch` : Nom de branche (défaut: `feat/ai-workflow-engine`)
-- `--dry-run` : Affiche sans exécuter
+- `--copilot-only` : Ne déploie que `.github/` (agents, prompts, instructions)
+- `--branch` : Branche Git (défaut: `feat/ai-workflow-engine`)
+- `--project-name` : Nom du projet (défaut: nom du dossier)
+- `--user-name` : Nom utilisateur (défaut: utilisateur système)
+- `--lang` : Langue (défaut: `French`)
+- `--dry-run` : Aperçu sans exécution
 
-## 📚 Documentation Complète
+Voir [docs/Deployment.md](docs/Deployment.md) pour le guide complet.
 
-- **[Architecture.md](docs/Architecture.md)** — Détails techniques, patterns, décisions
-- **[Workflow.md](docs/Workflow.md)** — Exécution des workflows, état, transitions
-- **[Agents.md](docs/Agents.md)** — Catalog de chaque agent, prompts, skillets
-- **[DeploymentGuide.md](docs/DeploymentGuide.md)** — Guide déploiement avancé
+## Documentation
 
-## 🧪 Tests
+- [Agents.md](docs/Agents.md) — Catalog des 17 agents AIDE
+- [Workflow.md](docs/Workflow.md) — Détails des workflows et du cycle de développement
+- [Architecture.md](docs/Architecture.md) — Architecture technique et modes d'exécution
+- [Deployment.md](docs/Deployment.md) — Guide de déploiement vers un projet cible
+- [BMAD-AIDE-Coexistence.md](docs/BMAD-AIDE-Coexistence.md) — Séparation BMAD/AIDE dans ce dépôt
+
+## Tests
 
 ```bash
-# Lancer tous les tests (138 tests, 81% coverage)
-uv run pytest -v
-
-# Coverage détaillé
+uv run pytest -v                    # 138 tests
 uv run pytest --cov=src/ai_workflow --cov-report=html
-
-# Tests spécifiques
-uv run pytest tests/test_engine/test_workflow_engine.py -v
 ```
 
-## 🔧 Configuration
+## Statistiques
 
-### Fichier `pyproject.toml`
-
-```toml
-[project]
-name = "ai-workflow-engine"
-version = "0.1.0"
-requires-python = ">=3.11"
-
-[project.scripts]
-ai-workflow = "ai_workflow.cli:app"  # CLI entry point
-```
-
-### Dépendances principales
-
-- **typer** + **rich** : Interface CLI interactive
-- **transitions** : State machine (workflows)
-- **pydantic** : Validation models
-- **jinja2** : Rendering templates
-- **pyyaml** : Configuration YAML
-- **pytest** : Framework tests
-- **ruff** : Linting/formatting
-
-## 🎯 Intégration Continue
-
-Tout code pushé doit :
-1. ✅ Passer `ruff check` (linting)
-2. ✅ Passer `pytest` (138 tests)
-3. ✅ Maintenir ≥81% coverage
-
-```bash
-# Pre-commit local
-uv run ruff check src/ tests/
-uv run pytest
-```
-
-## 📝 Contribution
-
-Pour contribuer :
-1. Créer une branche `feat/` ou `fix/`
-2. Ajouter tests pour les changements
-3. Lancer `uv run ruff check --fix` avant commit
-4. Pousser vers GitLab
-
-## 📦 Bundle & Distribution
-
-Le dossier `bundle/` contient les artifacts de production :
-- `pyproject.toml` : Config déployée (sans dev deps)
-- `README.md` : Docs utilisateur simplifiées
-
-Utilisé par `deploy.py` pour distribuer le moteur vers des projets cibles.
-
-## 📊 Statistiques du Projet
-
-- **Lines of Code** : ~3500 (source) + ~2000 (tests)
-- **Test Coverage** : 81%
-- **Agents** : 17 spécialisés
-- **Workflows** : 3 orchestrations
-- **Python** : ≥3.11
-- **Package Manager** : uv
-- **Linter** : ruff
-- **Framework CLI** : Typer
-
-## 🤝 Support & Contact
-
-Pour questions ou bugs :
-- 🜔 **GitLab Issues** : [Create issue](https://gitlab.example.com/olahouze/IA-Developpement-Workflow-IDE/-/issues)
-- 📧 **Contact** : B68682@placide-cloud.fr
+| Métrique | Valeur |
+|---|---|
+| **Version** | 0.1.0 |
+| **Agents AIDE** | 17 |
+| **Workflows AIDE** | 3 + 2 utilitaires |
+| **Tests** | 138 (81% coverage) |
+| **Python** | ≥ 3.11 |
+| **Mode Copilot** | Autonome (pas de runtime Python requis) |
 
 ---
 
-**Version 0.1.0** — Basé sur BMAD Method (Business Modelling & Agency Design)
+**AIDE v0.1.0** — AI Development Engine

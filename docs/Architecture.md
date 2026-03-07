@@ -1,41 +1,29 @@
-# Architecture — AI Workflow Engine
+# Architecture — AIDE (AI Development Engine)
 
 ## Vue d'ensemble
 
-L'AI Workflow Engine est un moteur d'orchestration modulaire conçu pour exécuter de workflows complexes coordonnant plusieurs agents IA spécialisés.
+AIDE est un moteur d'orchestration modulaire coordonnant 17 agents IA spécialisés pour développer un projet de bout en bout. Il fonctionne selon **deux modes d'exécution** complémentaires.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      CLI Interface (Typer)                  │
-│              init | run | status | agents                   │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────┐
-│              Context Builder & Configuration                │
-│           (FileManager, MemoryManager, SkillManager)        │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────┐
-│         Workflow Engine (State Machine via transitions)     │
-│         ├─ WorkflowState (PENDING → RUNNING → COMPLETE)    │
-│         ├─ Orchestration (séquence | parallèle)            │
-│         └─ Error Handling & Verdicts                        │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-       ┌───────────────┼───────────────┐
-       │               │               │
-   ┌───▼──┐      ┌────▼─────┐    ┌───▼──┐
-   │Agent │      │Fork/Join │    │Verdict
-   │Runner│      │Executor  │    │Logic│
-   └──────┘      └──────────┘    └─────┘
-       │               │               │
-       └───────────────┼───────────────┘
-                       │
-          ┌────────────▼──────────────┐
-          │   17 Agents spécialisés   │
-          │  (brainstormer, analyst,  │
-          │   architect, developer...)│
-          └───────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                    AIDE — Deux modes d'exécution                    │
+├──────────────────────────┬───────────────────────────────────────────┤
+│   Mode Copilot Natif     │       Mode Engine Python                 │
+│   (agents + prompts)     │       (orchestration automatisée)        │
+├──────────────────────────┼───────────────────────────────────────────┤
+│ .github/agents/*.md      │ CLI (Typer): ai-workflow run             │
+│ .github/prompts/*.md     │   ├─ WorkflowEngine (state machine)     │
+│ copilot-instructions.md  │   ├─ AgentRunner + ForkJoin              │
+│                          │   ├─ Verdict (PASS/FAIL bloquant)        │
+│ Exécution : Copilot Chat │   └─ Managers (File, Memory, Skill)     │
+│ @AIDE-* et /AIDE-*       │                                         │
+│                          │ Exécution : terminal                     │
+│ Runtime : aucun          │ Runtime : Python ≥ 3.11                  │
+│ Dépendance : VS Code     │ Dépendances : typer, pydantic, jinja2.. │
+├──────────────────────────┴───────────────────────────────────────────┤
+│                    Données partagées                                │
+│         .ai-workflow/ (state.json, reports/, us/, profil_projet.md) │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Couches Architecturales
@@ -640,3 +628,114 @@ tests/
 3. **Multi-LLM** : Support OpenAI, Anthropic, local models
 4. **Streaming** : Render agent responses en streaming
 5. **Observability** : Logs structurés, traces distribués
+
+---
+
+## Architecture de Déploiement AIDE
+
+### Vue d'ensemble du déploiement
+
+```
+┌───────────────────────────────────┐
+│  Projet Source                    │
+│  (IA-Developpement-Workflow-IDE)  │
+│                                   │
+│  bundle/                          │
+│  ├── .github/agents/ (17)        │
+│  ├── .github/prompts/ (5)        │
+│  ├── .github/copilot-instructions│
+│  └── .ai-workflow/ (template)    │
+│                                   │
+│  engine/src/ai_workflow/          │
+│  pyproject.toml, tests/           │
+└──────────┬────────────────────────┘
+           │
+     [deploy.py]
+           │
+           ├─── --copilot-only ──────────────────┐
+           │                                      │
+           ▼                                      ▼
+┌──────────────────────────┐    ┌─────────────────────────────┐
+│  Déploiement complet     │    │  Déploiement Copilot-only    │
+│                          │    │                              │
+│  .github/                │    │  .github/                    │
+│  ├── agents/AIDE-*.md    │    │  ├── agents/AIDE-*.md        │
+│  ├── prompts/AIDE-*.md   │    │  ├── prompts/AIDE-*.md       │
+│  └── copilot-instr.md    │    │  └── copilot-instr.md        │
+│                          │    │                              │
+│  .ai-workflow/ (template)│    │  .ai-workflow/ (template)    │
+│                          │    │                              │
+│  src/ai_workflow/ (engine)│    │  (pas d'engine Python)      │
+│  pyproject.toml           │    │                              │
+│  tests/                   │    │  Fonctionne sans Python     │
+└──────────────────────────┘    └─────────────────────────────┘
+```
+
+### Mode Copilot Natif
+
+Les fichiers `.agent.md` et `.prompt.md` sont **complètement autonomes** :
+- Format : YAML frontmatter + Markdown
+- Parsing : natif par GitHub Copilot
+- Aucune dépendance externe (pas de Jinja2 à l'exécution)
+- Le script `generate_bundle.py` supprime les templates Jinja2 lors de la génération
+
+**Flux utilisateur** :
+1. L'utilisateur tape `@AIDE-developpeur` dans Copilot Chat
+2. Copilot charge `.github/agents/AIDE-developpeur.agent.md`
+3. Le YAML frontmatter déclare les tools autorisés
+4. Les instructions Markdown guident l'agent
+5. L'agent lit/écrit dans `.ai-workflow/` (rapports, profil)
+
+**Flux workflow** :
+1. L'utilisateur tape `/AIDE-workflow-vierge`
+2. Copilot charge `.github/prompts/AIDE-workflow-vierge.prompt.md`
+3. Les instructions orchestrent les agents pas-à-pas
+4. L'état est sauvé dans `.ai-workflow/state.json`
+5. L'utilisateur avance manuellement d'étape en étape
+
+### Mode Engine Python
+
+Pour une orchestration automatisée avec machine à états, parallélisation et verdicts :
+
+**Exécution** :
+```bash
+ai-workflow run --workflow vierge
+```
+
+**Ce que le moteur apporte** :
+- Machine à états (library `transitions`) avec 14 états et transitions
+- Fork/Join pour parallélisation des analyseurs
+- Verdict automatique (PASS/FAIL bloquant) avec retry
+- Injection de contexte Jinja2 dans les prompts agents
+- Gestion mémoire et profil projet automatisée
+
+### Fusion non-destructive
+
+Le déploiement vers un projet cible qui possède déjà un `.github/copilot-instructions.md` utilise des marqueurs :
+
+```markdown
+<!-- contenu existant du projet -->
+
+<!-- AIDE:START -->
+# AIDE — AI Development Engine
+...
+<!-- AIDE:END -->
+```
+
+Les fichiers `AIDE-*.agent.md` sont ajoutés sans écraser les agents existants (non-AIDE) du projet.
+
+### Injection de version
+
+Le script `deploy.py` injecte la version depuis `pyproject.toml` dans :
+- Le message de commit
+- Le placeholder `@@VERSION@@` dans `copilot-instructions.md`
+
+### Indépendance AIDE / BMAD
+
+Le produit AIDE déployé n'a **aucune dépendance** vers le framework BMAD :
+- Aucun fichier `_bmad/` n'est déployé
+- Aucun agent `bmad-*` n'est copié
+- Le code `engine/` ne référence jamais `_bmad/`
+- Les `.agent.md` du bundle ne chargent aucune configuration BMAD
+
+Voir [BMAD-AIDE-Coexistence.md](BMAD-AIDE-Coexistence.md) pour les détails.
