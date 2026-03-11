@@ -107,6 +107,15 @@ def banner() -> None:
     print()
 
 
+def _resolve_cmd(cmd: list[str]) -> list[str]:
+    """Résout le nom de la commande en chemin complet sur Windows (.cmd, .bat, etc.)."""
+    if platform.system() == "Windows" and cmd:
+        resolved = shutil.which(cmd[0])
+        if resolved:
+            return [resolved] + cmd[1:]
+    return cmd
+
+
 def run(
     cmd: list[str],
     *,
@@ -116,6 +125,7 @@ def run(
     timeout: int = 300,
 ) -> subprocess.CompletedProcess:
     """Exécute une commande avec logging."""
+    cmd = _resolve_cmd(cmd)
     display = " ".join(cmd[:5]) + (" ..." if len(cmd) > 5 else "")
     info(f"Exécution : {_c(Colors.CYAN, display)}")
     try:
